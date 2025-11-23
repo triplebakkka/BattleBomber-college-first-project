@@ -22,13 +22,17 @@ public:
     Player(Vector2 startPos);
     void Update();
     void Draw();
+    void DrawDebug(bool debugMode);
     void Move(Vector2 input);
     void Shoot();
     void UpdateBullets();
     void DrawBullets();
+    void DrawBulletsDebug(bool debugMode);
     Rectangle GetRect() const;
     Vector2 GetPosition() const;
     void SetPosition(Vector2 newPos);
+    float GetSpeed() const;
+    void SetDirection(Vector2 dir);
     void GivePowerUp();
     bool HasPowerUp() const;
     std::vector<Bullet>& GetBullets();

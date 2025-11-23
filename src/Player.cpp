@@ -19,24 +19,35 @@ void Player::Update() {
 }
 
 void Player::Draw() {
-    TextureManager* texManager = TextureManager::GetInstance();
-    Texture2D tankTexture = texManager->GetTexture("tank");
+    DrawDebug(false);
+}
+
+void Player::DrawDebug(bool debugMode) {
+    if (!debugMode) {
+        TextureManager* texManager = TextureManager::GetInstance();
+        Texture2D tankTexture = texManager->GetTexture("tank");
+        
+        // Calculate rotation based on direction
+        float rotation = 0.0f;
+        if (direction.x == 1) rotation = 90.0f;
+        else if (direction.x == -1) rotation = 270.0f;
+        else if (direction.y == -1) rotation = 0.0f;
+        else if (direction.y == 1) rotation = 180.0f;
+        
+        // Draw tank sprite instead of rectangle
+        Rectangle sourceRect = {0, 0, (float)tankTexture.width, (float)tankTexture.height};
+        Rectangle destRect = {position.x, position.y, size.x, size.y};
+        Vector2 origin = {size.x/2, size.y/2};
+        
+        DrawTexturePro(tankTexture, sourceRect, destRect, origin, rotation, WHITE);
+    } else {
+        // Draw player hitbox
+        Rectangle playerRect = GetRect();
+        DrawRectangleRec(playerRect, BLUE);
+        DrawRectangleLinesEx(playerRect, 2.0f, BLACK);
+    }
     
-    // Calculate rotation based on direction
-    float rotation = 0.0f;
-    if (direction.x == 1) rotation = 90.0f;
-    else if (direction.x == -1) rotation = 270.0f;
-    else if (direction.y == -1) rotation = 0.0f;
-    else if (direction.y == 1) rotation = 180.0f;
-    
-    // Draw tank sprite instead of rectangle
-    Rectangle sourceRect = {0, 0, (float)tankTexture.width, (float)tankTexture.height};
-    Rectangle destRect = {position.x, position.y, size.x, size.y};
-    Vector2 origin = {size.x/2, size.y/2};
-    
-    DrawTexturePro(tankTexture, sourceRect, destRect, origin, rotation, WHITE);
-    
-    DrawBullets();
+    DrawBulletsDebug(debugMode);
 }
 
 void Player::Move(Vector2 input) {
@@ -71,8 +82,12 @@ void Player::UpdateBullets() {
 }
 
 void Player::DrawBullets() {
+    DrawBulletsDebug(false);
+}
+
+void Player::DrawBulletsDebug(bool debugMode) {
     for (auto& bullet : bullets) {
-        bullet.Draw();
+        bullet.DrawDebug(debugMode);
     }
 }
 
@@ -86,6 +101,16 @@ Vector2 Player::GetPosition() const {
 
 void Player::SetPosition(Vector2 newPos) {
     position = newPos;
+}
+
+float Player::GetSpeed() const {
+    return speed;
+}
+
+void Player::SetDirection(Vector2 dir) {
+    if (dir.x != 0 || dir.y != 0) {
+        direction = dir;
+    }
 }
 
 void Player::GivePowerUp() {

@@ -19,11 +19,12 @@ private:
     GameState currentState;
     Menu menu;
     LevelManager levelManager;
-    Player player;
+    Player* player; 
     int currentLevel;
     float gameTime;
     float levelTimeLimit;
     bool levelCompleted;
+    bool debugMode;
     void LoadTextures();
 
 public:
